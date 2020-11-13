@@ -1,0 +1,4 @@
+/api/v2/uc/granted-actions:
+  get:
+    $ref: /v2/uc/granted-actions/get.yaml
+

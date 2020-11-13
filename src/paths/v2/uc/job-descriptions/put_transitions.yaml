@@ -1,0 +1,16 @@
+tags: [ complex_update ]
+description: Update Job Description State
+parameters:
+  - $ref: ./parameters/jobDescriptionUuid.yaml
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: ./requests/put_transitions.yaml
+responses:
+  204:
+    description: Returned in case request was successful
+  400:
+    $ref: '#/components/responses/BadRequest'
+  401:
+    $ref: '#/components/responses/Unauthorized'

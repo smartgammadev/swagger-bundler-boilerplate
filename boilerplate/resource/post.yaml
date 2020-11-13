@@ -1,0 +1,23 @@
+tags: [ v2_resource_tag ]
+description: Create resource
+parameters:
+  - $ref: ./parameters/ResourceId.yaml
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: ./requests/post.yaml
+responses:
+  201:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uuid:
+              $ref: '#/components/schemas/UUID'
+  400:
+    $ref: '#/components/responses/BadRequest'
+  401:
+    $ref: '#/components/responses/Unauthorized'

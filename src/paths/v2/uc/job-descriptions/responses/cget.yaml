@@ -1,0 +1,38 @@
+type: array
+items:
+  type: object
+  properties:
+    job:
+      $ref: '#/components/schemas/IdTitleObject'
+    experience_state:
+      $ref: '#/components/schemas/IdTitleObject'
+    title:
+      type: string
+      example: Test Job Description
+    hourly_rate:
+      type: number
+      format: float
+      example: 20.2
+    management_coefficient:
+      type: number
+      format: float
+      example: 20.2
+    delegation_coefficient:
+      type: number
+      format: float
+      example: 20.2
+    created_at:
+      $ref: '#/components/schemas/Timestamp'
+    tasks:
+      type: array
+      items:
+        type: object
+        properties:
+          description:
+            type: string
+            example: Simple Func.
+    purchase_orders_amount:
+      type: integer
+      example: 1
+    tea:
+      $ref: '#/components/schemas/IdTitleObject'

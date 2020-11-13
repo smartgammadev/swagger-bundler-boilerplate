@@ -1,0 +1,14 @@
+name: Authorization
+in: header
+description: Token to be passed as a header
+required: true
+schema:
+  type: string
+style: simple
+examples:
+  owner:
+    $ref: '#/components/examples/OwnerBearer'
+  candidateStep1:
+    $ref: '#/components/examples/CandidateStep1Bearer'
+  candidateStep2:
+    value: 'Bearer TODO'

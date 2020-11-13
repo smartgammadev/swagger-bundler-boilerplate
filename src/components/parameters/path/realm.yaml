@@ -1,0 +1,8 @@
+in: path
+name: role
+description: 'Realm'
+required: true
+schema:
+  type: string
+  enum: [uc, tea, candidate]
+example: uc

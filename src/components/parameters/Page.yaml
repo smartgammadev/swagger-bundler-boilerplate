@@ -1,0 +1,7 @@
+in: query
+name: page
+description: 'Page number'
+example: 1
+schema:
+  type: integer
+  minimum: 0

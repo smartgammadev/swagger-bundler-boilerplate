@@ -1,0 +1,14 @@
+in: query
+name: ids[]
+description: 'array of Resource Ids'
+schema:
+  type: array
+  items:
+    type: string
+examples:
+  id:
+    summary: Send integer ids
+    value: [1, 2]
+  uuid:
+    summary: Send uuids as ids
+    value: ['123e4567-e89b-12d3-a456-426655440000', '123e4567-e89b-12d3-a456-426655440001']

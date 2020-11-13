@@ -1,0 +1,3 @@
+type: integer
+description: timestamp
+example: 1558202400

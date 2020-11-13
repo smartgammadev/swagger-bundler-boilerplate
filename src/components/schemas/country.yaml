@@ -1,0 +1,19 @@
+type: object
+properties:
+    id:
+      type: string
+      format: uuid
+      example: f7f3a1aa-e3d2-4dab-aa37-28f8bc0a385f
+    title:
+      type: string
+      maxLength: 255
+    iso:
+      type: string
+      maxLength: 4
+    nationality:
+      type: string
+      maxLength: 255
+    is_eu:
+      type: boolean
+    is_birth_only:
+      type: boolean

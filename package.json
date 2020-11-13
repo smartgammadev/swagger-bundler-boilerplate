@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "compile": "multi-file-swagger -o yaml ./src/index.yaml > ./build/openapi.yaml",
+    "validate": "swagger-cli validate ./build/openapi.yaml",
+    "dredd": "dredd --config ./dredd.yml.dist",
+    "bundle": "swagger-cli bundle -r -o ./build/openapi.yaml -t yaml ./src/index.yaml",
+    "concat": "concat-cli -f src/paths/v2/**/**/**/**/index.yaml src/paths/v2/**/**/**/index.yaml src/paths/v2/**/**/index.yaml -o src/paths/index_bundled.yaml"
+  },
+  "dependencies": {
+    "concat-cli": "^4.0.0",
+    "multi-file-swagger": "^2.3.0",
+    "swagger-cli": "^2.2.2",
+    "dredd": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:troopshr/troops_swagger_spec.git"
+  },
+  "private": true,
+  "description": "Troops backend API spec"
+}

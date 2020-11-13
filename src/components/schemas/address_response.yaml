@@ -1,0 +1,24 @@
+type: object
+properties:
+  city:
+    type: string
+    example: 'Lyon'
+  zip_code:
+    type: string
+    example: 69002
+  address:
+    type: string
+    example: '63 Rue de la République'
+  country_id:
+    $ref: '#/components/schemas/UUID'
+  latitude:
+    type: number
+    format: float
+    example: 45.7596796
+  longitude:
+    type: number
+    format: float
+    example: 45.7596796
+  full_address:
+    type: string
+    example: 63 Rue de la République, 69002 Lyon, France

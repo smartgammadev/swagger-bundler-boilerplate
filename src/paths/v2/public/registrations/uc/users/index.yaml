@@ -1,0 +1,5 @@
+#----------------  v2_public_registrations_uc_users ----------------#
+/api/v2/public/registrations/uc/users:
+  post:
+    $ref: v2/public/registrations/uc/users/post.yaml
+#---------------- END v2_public_registrations_uc_users ----------------#

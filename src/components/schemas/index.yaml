@@ -1,0 +1,55 @@
+Tokens:
+  $ref: tokens.yaml
+FirstName:
+  $ref: scalars/first_name.yaml
+LastName:
+  $ref: scalars/last_name.yaml
+Email:
+  $ref: scalars/email.yaml
+Phone:
+  $ref: scalars/phone.yaml
+Gender:
+  $ref: scalars/gender.yaml
+Address:
+  $ref: address.yaml
+Timestamp:
+  $ref: scalars/timestamp.yaml
+UUID:
+  $ref: scalars/uuid.yaml
+Date:
+  $ref: scalars/date.yaml
+File:
+  $ref: scalars/file.yaml
+DateTime:
+  $ref: scalars/date_time.yaml
+PaginationV2:
+  $ref: scalars/pagination_v2.yaml
+FileV2:
+  $ref: scalars/file_v2.yaml
+FileBase64:
+  $ref: scalars/file_base64.yaml
+Time:
+  $ref: scalars/time.yaml
+City:
+  $ref: city.yaml
+Country:
+  $ref: country.yaml
+SimpleId:
+  $ref: simple_id.yaml
+inline_response_401:
+  type: object
+  properties:
+    title:
+      type: string
+    convetion_form:
+      type: string
+NullValue:
+  $ref: scalars/null.yaml
+Currency:
+  $ref: currency.yaml
+Asset:
+  $ref: acl/asset.yaml
+IdTitleObject:
+  $ref: scalars/id_title_object.yaml
+AddressResponse:
+  $ref: address_response.yaml

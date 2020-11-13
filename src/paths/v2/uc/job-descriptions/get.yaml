@@ -1,0 +1,21 @@
+tags: [ show ]
+description: Get Job Description
+parameters:
+  - in: path
+    name: jobDescriptionUuid
+    description: 'Job Description UUID identifier'
+    required: true
+    schema:
+      $ref: '#/components/schemas/UUID'
+    example: 'd7e5c456-7c75-4cd9-b442-5295a3603ad5'
+responses:
+  200:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          $ref: ./responses/get.yaml
+  401:
+    $ref: '#/components/responses/Unauthorized'
+  404:
+    $ref: '#/components/responses/NotFound'

@@ -1,0 +1,5 @@
+value:
+  refresh_token:
+    $ref: 'tokens.yaml#/owner/refresh_token'
+  token:
+    $ref: 'tokens.yaml#/owner/jwt_token'

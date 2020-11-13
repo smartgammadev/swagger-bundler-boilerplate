@@ -1,0 +1,18 @@
+tags: [ v2_resource_tag ]
+description: List of resource
+parameters:
+  - $ref: '#/components/parameters/Page'
+  - $ref: '#/components/parameters/PerPage'
+  - $ref: '#/components/parameters/Limit'
+  - $ref: ./parameters/filters.yaml
+  - $ref: ./parameters/sorting.yaml
+
+responses:
+  200:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          $ref: ./responses/cget.yaml
+  401:
+    $ref: '#/components/responses/Unauthorized'

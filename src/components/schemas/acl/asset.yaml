@@ -1,0 +1,15 @@
+type: string
+enum:
+  - Candidate
+  - JobDescription
+  - PurchaseOrder
+  - Tea
+  - TeaRole
+  - TeaUser
+  - Timesheet
+  - Uc
+  - UcRole
+  - UcUser
+  - WorkAgreement
+  - DownPayment
+example: JobDescription

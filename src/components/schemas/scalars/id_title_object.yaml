@@ -1,0 +1,9 @@
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+    example: c00c158f-8d24-434f-9dd3-012fda5b4ad7
+  title:
+    type: string
+    example: 'Example Title'

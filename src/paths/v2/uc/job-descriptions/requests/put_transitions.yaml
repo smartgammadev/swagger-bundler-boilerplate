@@ -1,0 +1,6 @@
+type: object
+properties:
+  transition:
+    $ref: ../parameters/transition.yaml
+required:
+  - transition

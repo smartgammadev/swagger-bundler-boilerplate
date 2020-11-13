@@ -1,0 +1,28 @@
+in: query
+name: filters
+description: Array of filters
+style: deepObject
+explode: true
+schema:
+  type: object
+  properties:
+    uc:
+      type: string
+      format: uuid
+      example: 79398e53-b8fb-42e9-97e8-cc35dd2bbd56
+      description: filter by uc uuid
+    tea:
+      type: string
+      format: uuid
+      example: 2122ba6d-567d-3a90-93e8-22c1761e7f1a
+      description: filter by TEA uuid
+    states:
+      type: array
+      items:
+        type: string
+        example: published
+        enum: [published, archived]
+    search:
+      type: string
+
+

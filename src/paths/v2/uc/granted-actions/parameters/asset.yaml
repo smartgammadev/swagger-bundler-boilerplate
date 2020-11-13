@@ -1,0 +1,7 @@
+in: query
+name: asset
+required: true
+description: 'Asset name'
+schema:
+  $ref: '#/components/schemas/Asset'
+example: 'JobDescription'

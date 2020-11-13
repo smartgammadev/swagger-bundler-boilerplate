@@ -1,0 +1,34 @@
+description: List of owner's subordinates
+value:
+  - id: 6
+    email: admin@izuma.loc
+    first_name: Faizah
+    last_name: Navi
+  - id: 16
+    email: drh_main_0@izuma.loc
+    first_name: Faizah
+    last_name: Navi
+  - id: 18
+    email: drh0@izuma.loc
+    first_name: Sophie
+    last_name: Milelt
+  - id: 21
+    email: manager0@izuma.loc
+    first_name: Faizah
+    last_name: Navi
+  - id: 27
+    email: employee0@izuma.loc
+    first_name: Nathalie
+    last_name: Leroy
+  - id: 25
+    email: manager_main_0@izuma.loc
+    first_name: Faizah
+    last_name: Navi
+  - id: 32
+    email: employee_main_0@izuma.loc
+    first_name: Nathalie
+    last_name: Leroy
+  - id: 34
+    email: accountant0@izuma.loc
+    first_name: Nathalie
+    last_name: Leroy

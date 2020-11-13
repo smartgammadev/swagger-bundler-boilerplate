@@ -1,0 +1,17 @@
+type: object
+description: Resource Identifier. One of properties "id" or "uuid" might be null.
+properties:
+  uuid:
+    oneOf:
+      - $ref: '#/components/schemas/UUID'
+      - type: string
+        nullable: true
+        example: null
+  id:
+    oneOf:
+      - type: integer
+        example: 2
+      - type: integer
+        nullable: true
+        example: null
+example: {"id": null,"uuid":"123e4567-e89b-12d3-a456-426655440000"}

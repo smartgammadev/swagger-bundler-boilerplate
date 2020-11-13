@@ -1,0 +1,11 @@
+tags: [ v2_resource_tag ]
+description: Delete resource
+parameters:
+  - $ref: ./parameters/ResourceId.yaml
+responses:
+  204:
+    description: Returned in when request was successfull. No body
+  401:
+    $ref: '#/components/responses/Unauthorized'
+  404:
+    $ref: '#/components/responses/NotFound'

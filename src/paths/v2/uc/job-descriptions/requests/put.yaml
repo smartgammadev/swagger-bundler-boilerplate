@@ -1,0 +1,56 @@
+type: object
+properties:
+  title:
+    type: string
+    example: Test Job Description
+  job:
+    type: number
+    example: 1
+    description:  from our vocabulary list 'Job'
+  experience_state:
+    type: number
+    example: 1
+    description: Id from our vocabulary list 'Ref::ExperienceState'
+  hourly_rate:
+    type: number
+    format: float
+    example: 20.2
+  is_medical_screening:
+    type: boolean
+  is_risky:
+    type: boolean
+  tasks:
+    type: array
+    items:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Simple Func.
+  worker_range:
+    type: string
+    example: low
+  union_coefficient:
+    type: string
+    example: '180'
+  painfulness:
+    type: array
+    items:
+      type: string
+      format: uuid
+      example: 5fcab6ba-7480-4840-b27e-eb66f9869166
+      description: uuid from our vocabulary list 'Ref::Painfulness'
+  risks:
+    type: array
+    items:
+      type: number
+      example: 1
+      description: Id from our vocabulary list 'Ref:Risk'
+required:
+  - title
+  - job
+  - experience_state
+  - hourly_rate
+  - tasks
+  - is_medical_screening
+  - is_risky

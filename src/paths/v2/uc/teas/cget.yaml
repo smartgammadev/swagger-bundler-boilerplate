@@ -1,0 +1,26 @@
+tags: [ list_example ]
+description: Get TEAs that have an Interim Partnership with given UC
+operationId: Uc_Teas_viewPartnerTeas
+parameters:
+  - $ref: '#/components/parameters/Page'
+  - $ref: '#/components/parameters/Limit'
+  - $ref: ./parameters/ucId.yaml
+  - $ref: ./parameters/filters.yaml
+responses:
+  200:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ./responses/cget.yaml
+            pagination:
+              $ref: '#/components/schemas/PaginationV2'
+  401:
+    $ref: '#/components/responses/Unauthorized'
+  404:
+    $ref: '#/components/responses/NotFound'

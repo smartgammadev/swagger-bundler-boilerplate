@@ -1,0 +1,15 @@
+# Allow null values.
+nullable: true
+# Disallow any non-null value.
+not:
+  anyOf:
+    - type: string
+      nullable: true
+    - type: number
+      nullable: true
+    - type: boolean
+    - type: object
+    - type: array
+      # Array schema must specify items, so we'll use an
+      # empty object to mean arrays of any type are included.
+      items: {}

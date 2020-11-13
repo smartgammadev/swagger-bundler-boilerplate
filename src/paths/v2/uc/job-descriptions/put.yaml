@@ -1,0 +1,22 @@
+tags: [ update ]
+description: Update Job Description
+parameters:
+  - in: path
+    name: jobDescriptionUuid
+    description: 'Job Description UUID identifier'
+    required: true
+    schema:
+      $ref: '#/components/schemas/UUID'
+    example: 'bbae4cea-8870-459e-b510-33133f48a080'
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: ./requests/put.yaml
+responses:
+  204:
+    description: Returned in case request was successful
+  400:
+    $ref: '#/components/responses/BadRequest'
+  401:
+    $ref: '#/components/responses/Unauthorized'

@@ -1,0 +1,23 @@
+tags: [ v2_candidate_registration, 3_10_candidate_self_registration]
+security: []
+description: |
+  Candidate adds informations about himself and complete self-registration
+operationId: Candidate_Registration_createCandidateFromRegistration
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: ./requests/post.yaml
+responses:
+  201:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          $ref: ./responses/post.yaml
+  400:
+    $ref: "#/components/responses/BadRequest"
+  401:
+    $ref: "#/components/responses/Unauthorized"
+  404:
+    $ref: "#/components/responses/NotFound"

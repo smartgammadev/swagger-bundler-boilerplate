@@ -1,0 +1,1 @@
+description: Returned in case the user is authorized, but has not enough rights(role) to get the ressource

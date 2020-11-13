@@ -1,0 +1,31 @@
+schemas:
+  $ref: schemas/index.yaml
+
+parameters:
+  $ref: parameters/index.yaml
+
+headers:
+  $ref: headers/index.yaml
+
+responses:
+  $ref: responses/index.yaml
+
+examples:
+  $ref: examples/index.yaml
+
+securitySchemes:
+   bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Use for Troops API
+   algoliaApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Algolia-API-Key
+      description: Use only for Algolia API
+   algoliaAppIdAuth:
+      type: apiKey
+      in: header
+      name: X-Algolia-Application-Id
+      description: Use only for Algolia API

@@ -1,0 +1,79 @@
+type: object
+properties:
+  uuid:
+    type: string
+    format: uuid
+    example: 05758792-9b7d-4ab6-b428-1883be282f4a
+  uc_uuid:
+    type: string
+    format: uuid
+    example: 7b430893-952a-30c7-9ea2-a6106f466eeb
+  tea_uuid:
+    type: string
+    format: uuid
+    example: da9332d7-7c3f-31f4-813c-f67d1497772f
+  author:
+    type: string
+    format: uuid
+    example: cbeb09d1-ce47-364e-9d52-9e028cfc0f20
+  title:
+    type: string
+    example: Test Job Description
+  job:
+    type: number
+    example: 1
+    description:  from our vocabulary list 'Job'
+  experience_state:
+    type: number
+    example: 1
+    description: Id from our vocabulary list 'Ref::ExperienceState'
+  hourly_rate:
+    type: number
+    format: float
+    example: 20.2
+  is_medical_screening:
+    type: boolean
+    example: true
+  is_risky:
+    type: boolean
+    example: true
+  tasks:
+    type: array
+    items:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Simple Func.
+  worker_range:
+    type: string
+    example: low
+  union_coefficient:
+    type: string
+    example: '180'
+  painfulness:
+    type: array
+    items:
+      type: string
+      format: uuid
+      example: 6dd8bfff-d3ed-45c8-9422-67970f617769
+      description: uuid from our vocabulary list 'Ref::Painfulness'
+  risks:
+    type: array
+    items:
+      type: number
+      example: 1
+      description: Id from our vocabulary list 'Ref:Risk'
+    required:
+      - interim
+required:
+  - uc_uuid
+  - tea_uuid
+  - title
+  - job
+  - experience_state
+  - hourly_rate
+  - tasks
+  - is_medical_screening
+  - is_risky
+  - author

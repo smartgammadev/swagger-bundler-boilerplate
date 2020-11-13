@@ -1,0 +1,13 @@
+# IDE Files
+.idea/
+
+# Node vendors
+node_modules/
+
+# Compiled file
+openapi.yaml
+
+npm-debug.log
+package-lock.json
+
+src/paths/index_bundled.yaml

@@ -1,0 +1,33 @@
+ObjectCreatedWithId:
+  $ref: object_created_with_id.yaml
+NoContent:
+  $ref: 204.yaml
+BadRequest:
+  $ref: 400.yaml
+Unauthorized:
+  $ref: 401.yaml
+NotAllowed:
+  $ref: 403.yaml
+NotFound:
+  $ref: 404.yaml
+OPTIONS-CORS-200:
+  description: Cors responses
+  content:
+    application/json:
+      examples:
+        ok_response:
+          value: '{"cors": "ok"}'
+OPTIONS-CORS-400:
+  description: Returned when CORS is not allowed
+  content:
+    application/problem+json:
+      schema:
+        type: object
+      example: |-
+        {
+          "type": "https://example.net/bad-request",
+          "title": "Bad Request",
+          "status": 400,
+          "detail": "The method 'POST' is not allowed.",
+          "instance": "/content"
+        }

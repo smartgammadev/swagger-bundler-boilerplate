@@ -1,0 +1,7 @@
+in: query
+name: per_page
+description: 'Items Limit Per Page'
+example: 10
+schema:
+  type: integer
+  minimum: 1

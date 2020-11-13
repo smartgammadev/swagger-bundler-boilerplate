@@ -1,0 +1,23 @@
+version: '3.4'
+services:
+    swagger:
+        build:
+            context: ./
+            dockerfile: docker/swagger/Dockerfile
+            target: swagger-ui
+        env_file:
+            - .env
+        ports:
+            - '8084:8080'
+        volumes:
+            - ./build:/usr/share/nginx/html/openapi
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    prism:
+        build:
+          context: ./
+          dockerfile: docker/swagger/Dockerfile
+          target: prism
+        ports:
+            - '4010:4010'
+        volumes:
+            - ./build:/openapi

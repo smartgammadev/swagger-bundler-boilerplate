@@ -1,0 +1,12 @@
+in: query
+name: filters
+description: Array of filters
+style: deepObject
+explode: true
+schema:
+  type: object
+  properties:
+    workspace_employer:
+      type: string
+      enum: [uc, tea]
+      example: tea

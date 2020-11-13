@@ -1,0 +1,21 @@
+tags: [ password-reset ]
+security: []
+description: User reqiests his Invitation to be resend
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          email:
+            type: string
+            example: managed-new-candidate-user@mail.com
+responses:
+  204:
+    description: Returned in case request was successful
+  400:
+    $ref: "#/components/responses/BadRequest"
+  401:
+    $ref: "#/components/responses/Unauthorized"
+  404:
+    $ref: "#/components/responses/NotFound"

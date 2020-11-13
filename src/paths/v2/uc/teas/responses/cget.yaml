@@ -1,0 +1,14 @@
+type: object
+properties:
+  id:
+    $ref: '#/components/schemas/UUID'
+  title:
+    type: string
+    example: Test Title
+  address:
+    $ref: '#/components/schemas/AddressResponse'
+  # optional file example
+  logo:
+    anyOf:
+      - $ref: '#/components/schemas/FileV2'
+      - $ref: '#/components/schemas/NullValue'

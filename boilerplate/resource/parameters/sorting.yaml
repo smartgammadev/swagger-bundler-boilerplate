@@ -1,0 +1,11 @@
+in: query
+name: sorting
+description: Sorting
+style: deepObject
+explode: true
+schema:
+    type: object
+    properties:
+        created_at:
+            type: string
+            enum: [asc, desc]

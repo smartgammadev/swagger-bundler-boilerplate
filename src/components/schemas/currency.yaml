@@ -1,0 +1,9 @@
+type: string
+enum:
+  - EUR
+  - USD
+  - CHF
+  - GBP
+  - CFA
+  - RMB
+example: EUR

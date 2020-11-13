@@ -1,0 +1,13 @@
+/api/v2/uc/job-descriptions:
+  get:
+    $ref: v2/uc/job-descriptions/cget.yaml
+  post:
+    $ref: v2/uc/job-descriptions/post.yaml
+/api/v2/uc/job-descriptions/{jobDescriptionUuid}:
+  get:
+    $ref: v2/uc/job-descriptions/get.yaml
+  put:
+    $ref: v2/uc/job-descriptions/put.yaml
+/api/v2/uc/job-descriptions/{jobDescriptionUuid}/status:
+  put:
+    $ref: v2/uc/job-descriptions/put_transitions.yaml

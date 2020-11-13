@@ -1,0 +1,22 @@
+tags: [ list ]
+description: List of Job Descriptions
+parameters:
+  - $ref: ./parameters/filters.yaml
+  - $ref: '#/components/parameters/Page'
+  - $ref: '#/components/parameters/Limit'
+responses:
+  200:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ./responses/cget.yaml
+            pagination:
+              $ref: '#/components/schemas/PaginationV2'
+  401:
+    $ref: '#/components/responses/Unauthorized'
+  404:
+    $ref: '#/components/responses/NotFound'

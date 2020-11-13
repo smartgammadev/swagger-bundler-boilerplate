@@ -1,0 +1,7 @@
+in: path
+name: ucId
+description: 'UC identifier'
+required: true
+schema:
+  type: string
+example: bc730baa-de4d-3104-838c-cea3f3933e30

@@ -1,0 +1,37 @@
+tags: [ Auth ]
+description: Check user's credentials
+security: []
+requestBody:
+  description: User's credentials
+  content:
+    application/json:
+      schema:
+        $ref: '#/components/schemas/LoginForm'
+      examples:
+        owner:
+          $ref: '#/components/examples/OwnerCredentials'
+        candidate:
+          $ref: '#/components/examples/CandidateCredentials'
+        tea:
+          description: TEA's credentials
+          value:
+            _username: user@test.com
+            _password: mypassword
+responses:
+  200:
+    description: 'Tokens were successfully generated'
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Tokens'
+        examples:
+          owner:
+            $ref: '#/components/examples/OwnerBearerAndRefreshTokens'
+          candidate:
+            $ref: '#/components/examples/CandidateBearerAndRefreshTokens'
+  400:
+    $ref: '#/components/responses/BadRequest'
+  401:
+    $ref: '#/components/responses/Unauthorized'
+  404:
+    $ref: '#/components/responses/NotFound'

@@ -1,0 +1,13 @@
+/api/v2/resource:
+  post:
+    $ref: v2/resource/post.yaml
+  get:
+    $ref: v2/resource/cget.yaml
+
+/api/v2/resource/{ResourceId}:
+  get:
+    $ref: v2/resource/get.yaml
+  put:
+    $ref: v2/resource/put.yaml
+  delete:
+    $ref: v2/resource/delete.yaml

@@ -1,0 +1,84 @@
+type: object
+properties:
+  first_name:
+    type: string
+    example: John
+  last_name:
+    type: string
+    example: Dou
+  gender:
+    type: string
+    enum: [M, F]
+    example: M
+  phone:
+    type: string
+    maxLength: 30
+    example: '+330783650040'
+  email:
+    type: string
+    example: self-reg-candidate@troops.online
+  password:
+    type: string
+    example: pa55w0rd
+  address:
+    $ref: '#/components/schemas/Address'
+  birthday:
+    type: string
+    format: date
+    example: '2000-07-21'
+  country_of_birth:
+    type: string
+    format: uuid
+    example: 6abab572-4181-469f-b286-a34752e4df42
+  nationality:
+    type: string
+    format: uuid
+    example: 6abab572-4181-469f-b286-a34752e4df42
+  department_of_birth:
+    type: string
+    format: uuid
+    example: 019aa7d4-6035-493b-a45e-ac1e32361caa
+  city_of_birth:
+    type: string
+    example: Lyon
+  is_news_mailing_enabled:
+    type: boolean
+  is_terms_accepted:
+    type: boolean
+  contract_cdd:
+    type: object
+    description: One from contract_cdd | contract_interim | contract_freelance is required to pass
+    properties:
+      enable:
+        type: boolean
+  contract_freelance:
+    type: object
+    description: One from contract_cdd | contract_interim | contract_freelance is required to pass
+    properties:
+      enable:
+        type: boolean
+  contract_interim:
+    type: object
+    description: One from contract_cdd | contract_interim | contract_freelance is required to pass
+    properties:
+      tea_uuid:
+        type: string
+        format: uuid
+        nullable: true
+        description: Tea UUID. If the type is not selected, then send 'null'
+        example: 2122ba6d-567d-3a90-93e8-22c1761e7f1a
+required:
+  - first_name
+  - last_name
+  - gender
+  - phone
+  - email
+  - password
+  - address
+  - birthday
+  - country_of_birth
+  - nationality
+  - department_of_birth
+  - city_of_birth
+  - is_news_mailing_enabled
+  - is_terms_accepted

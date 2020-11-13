@@ -1,0 +1,5 @@
+description: 'Returned in case request was successful'
+content:
+  application/json:
+    schema:
+      $ref: '#/components/schemas/SimpleId'

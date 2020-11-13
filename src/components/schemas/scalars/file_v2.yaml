@@ -1,0 +1,18 @@
+type: object
+properties:
+  file:
+    type: string
+    description: 'File Name With Extension'
+    example: '5cec193a99813.pdf'
+  path:
+    type: string
+    description: 'Absolute File Path'
+    example: 'http://www.pdf995.com/samples/pdf.pdf'
+  secure:
+    type: string
+    example: 'http://troops.loc/app.php/api/v1/missions/contracts/files/401'
+    description: 'Secure File Path - API Route From Which File Can Be Downloaded'
+  title:
+    type: string
+    description: 'File Title'
+    example: '5cec193a99813'

@@ -1,0 +1,13 @@
+in: path
+name: role
+description: 'Role name'
+required: true
+schema:
+  type: string
+  enum: [uc, tea, candidate]
+example: uc
+#examples:
+#  owner:
+#    value: owner
+#  candidateStep1:
+#    value: candidate

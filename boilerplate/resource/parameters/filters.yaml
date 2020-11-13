@@ -1,0 +1,10 @@
+in: query
+name: filter
+description: Array of filters
+style: deepObject
+explode: true
+schema:
+    type: object
+    properties:
+        id:
+            type: integer

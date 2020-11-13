@@ -1,0 +1,18 @@
+type: object
+properties:
+  total:
+    type: integer
+    description: 'Total amount of entries'
+    example: 30
+  current_page:
+    type: integer
+    description: 'Current Page Number'
+    example: 1
+  per_page:
+    type: integer
+    description: 'Amount of one page entries'
+    example: 10
+  total_pages:
+    type: integer
+    description: 'Total Pages Amount'
+    example: 3

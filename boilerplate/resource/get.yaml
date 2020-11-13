@@ -1,0 +1,15 @@
+tags: [ v2_resource_tag ]
+description: Get resource
+parameters:
+  - $ref: ./parameters/ResourceId.yaml
+responses:
+  200:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          $ref: ./responses/get.yaml
+  401:
+    $ref: '#/components/responses/Unauthorized'
+  404:
+    $ref: '#/components/responses/NotFound'

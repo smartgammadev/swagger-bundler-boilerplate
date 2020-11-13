@@ -1,0 +1,18 @@
+tags: [ create ]
+description: Create new Job Description
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: ./requests/post.yaml
+responses:
+  201:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          $ref: ./responses/post.yaml
+  400:
+    $ref: '#/components/responses/BadRequest'
+  401:
+    $ref: '#/components/responses/Unauthorized'

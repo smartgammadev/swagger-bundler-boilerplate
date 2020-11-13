@@ -1,0 +1,15 @@
+type: object
+properties:
+  id:
+    type: integer
+  type:
+    type: string
+  file:
+    type: string
+  file_secure:
+    type: string
+example:
+    id: 1
+    type: type
+    file: 5cec193a99813.pdf
+    file_secure: http://url

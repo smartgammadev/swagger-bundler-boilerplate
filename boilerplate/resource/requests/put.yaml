@@ -1,0 +1,7 @@
+type: object
+properties:
+  example:
+    type: string
+    example: Example level
+required:
+  - example

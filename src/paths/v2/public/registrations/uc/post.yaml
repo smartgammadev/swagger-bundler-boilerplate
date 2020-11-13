@@ -1,0 +1,22 @@
+tags: [ v2_public_registrartions_uc ]
+description: Register new UC
+operationId: Uc_Registration_createUcFromRegistration
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: ./schemas/post.yaml
+responses:
+  201:
+    description: Returned in case request was successful
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uuid:
+              $ref: '#/components/schemas/UUID'
+  400:
+    $ref: '#/components/responses/BadRequest'
+  401:
+    $ref: '#/components/responses/Unauthorized'

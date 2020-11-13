@@ -1,0 +1,14 @@
+type: array
+items:
+  type: array
+  items:
+    oneOf:
+      - type: string
+      - type: array
+example:
+  -
+    - 95c185b7-4c15-49f6-ac35-73ec76f1c94f
+    - ["READ", "CREATE", "UPDATE", "DELETE", "ARCHIVE", "VALIDATE", "SIGN", "INVITE", "ACCEPT", "OWNER", "MASTER"]
+  -
+    - 55b41426-0269-4106-8e4c-0669a284c74e
+    - ["READ"]

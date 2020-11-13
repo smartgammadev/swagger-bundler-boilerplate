@@ -1,0 +1,33 @@
+type: object
+properties:
+  address:
+    $ref: '#/components/schemas/Address'
+  title:
+    type: string
+    example: Self Reg Uc
+    description: Reason sociale of the company
+  legal_status:
+    type: string
+    format: uuid
+    description: UUID
+    example: 9dc23298-57c7-4a89-b0eb-012f794543a1
+  ape_code:
+    type: string
+    format: uuid
+    description: UUID
+    example: 8401ced5-24d8-4b08-838d-0c3ced0ebfa4
+  siret:
+    type: string
+    example: '84429830700019'
+  registration_domain:
+    type: string
+    pattern: '@^https?://[^\s/$.?#].[^\s]*$@iS'
+    example: 'https://troops.fr'
+    description: Registration Domain Url
+required:
+  - address
+  - title
+  - legal_status
+  - ape_code
+  - siret
+  - registration_domain

@@ -1,0 +1,6 @@
+in: query
+name: order_by[id]
+example: desc
+description: asc|desc
+schema:
+  type: string

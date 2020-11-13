@@ -1,0 +1,12 @@
+type: object
+properties:
+  data:
+    type: array
+    items:
+      type: object
+      properties:
+        example:
+          type: string
+          example: 1
+  pagination:
+    $ref: '#/components/schemas/PaginationV2'

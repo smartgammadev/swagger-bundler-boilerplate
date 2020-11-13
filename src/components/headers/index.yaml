@@ -1,0 +1,19 @@
+Access-Control-Allow-Origin:
+  schema:
+    type: string
+  example: 'Access-Control-Allow-Origin: https://localhost:4201'
+
+Access-Control-Max-Age:
+  schema:
+    type: string
+  example: 'Access-Control-Max-Age: 600'
+
+Access-Control-Request-Headers:
+  schema:
+    type: string
+  example: 'content-type'
+
+Access-Control-Request-Method:
+  schema:
+    type: string
+  example: 'POST'

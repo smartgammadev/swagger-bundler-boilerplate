@@ -1,0 +1,7 @@
+in: path
+name: jobDescriptionUuid
+description: 'Job Description UUID identifier'
+required: true
+schema:
+  $ref: '#/components/schemas/UUID'
+example: 'f5a51aca-ec47-4383-a1d0-726a330a8a72'

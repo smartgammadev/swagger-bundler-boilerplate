@@ -1,0 +1,24 @@
+type: object
+properties:
+    id:
+        type: integer
+    title:
+        type: string
+        maxLength: 50
+    zip_code:
+        type: string
+        maxLength: 8
+    latitude:
+        type: number
+        format: float
+    longitude:
+        type: number
+        format: float
+    region:
+        type: string
+        maxLength: 50
+    iso:
+        type: string
+        maxLength: 5
+    country:
+        $ref: '#/components/schemas/Country'

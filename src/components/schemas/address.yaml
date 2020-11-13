@@ -1,0 +1,30 @@
+type: object
+properties:
+  city:
+    type: string
+    example: 'Lyon'
+  zip_code:
+    type: string
+    example: '69002'
+  address:
+    type: string
+    example: '63 Rue de la République'
+  country:
+    type: string
+    format: uuid
+    example: 6abab572-4181-469f-b286-a34752e4df42
+  latitude:
+    type: number
+    format: float
+    example: 45.7596796
+  longitude:
+    type: number
+    format: float
+    example: 45.7596796
+required:
+  - city
+  - zip_code
+  - address
+  - country
+  - latitude
+  - longitude

@@ -1,0 +1,7 @@
+in: query
+name: limit
+description: 'Number of entries per page'
+example: 10
+schema:
+  type: integer
+  minimum: 0

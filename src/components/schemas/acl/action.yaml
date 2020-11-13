@@ -1,0 +1,14 @@
+type: string
+enum:
+  - READ
+  - CREATE
+  - UPDATE
+  - DELETE
+  - ARCHIVE
+  - VALIDATE
+  - SIGN
+  - INVITE
+  - ACCEPT
+  - OWNER
+  - MASTER
+example: READ

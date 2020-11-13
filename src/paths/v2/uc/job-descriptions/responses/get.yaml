@@ -1,0 +1,61 @@
+type: object
+properties:
+  uc:
+    type: object
+    properties:
+      uuid:
+        $ref: '#/components/schemas/UUID'
+      title:
+        type: string
+        example: Carrefour Market Lyon 8
+      address:
+        $ref: '#/components/schemas/AddressResponse'
+  title:
+    type: string
+    example: Test Job Description
+  workspace_employer:
+    type: string
+    example: uc
+  job:
+    $ref: '#/components/schemas/IdTitleObject'
+  experience_state:
+    $ref: '#/components/schemas/IdTitleObject'
+  hourly_rate:
+    type: number
+    format: float
+    example: 20.2
+  management_coefficient:
+    type: number
+    format: float
+    example: 20.2
+  delegation_coefficient:
+    type: number
+    format: float
+    example: 20.2
+  is_medical_screening:
+    type: boolean
+  is_risky:
+    type: boolean
+  tasks:
+    type: array
+    items:
+      type: string
+      example: Simple Func.
+  worker_range:
+    type: string
+    example: low
+  union_coefficient:
+    type: string
+    example: '180'
+  painfulness:
+    type: array
+    items:
+      $ref: '#/components/schemas/IdTitleObject'
+  risks:
+    type: array
+    items:
+      $ref: '#/components/schemas/IdTitleObject'
+  created_at:
+    $ref: '#/components/schemas/Timestamp'
+  updated_at:
+    $ref: '#/components/schemas/Timestamp'
