@@ -1,7 +1,7 @@
 
 # README #
                    
-Troops API
+Smart Gamma multi-files OpenAPI specification boilerplate
   
 ### Requirements ###
 
@@ -53,11 +53,10 @@ In `index.yaml` you may find raw version of documentation. It uses references to
 
 Published spec is available on http://localhost:8084 
 
-### Troops deployed swagger UI 
+### Deployed swagger UI 
 
-master branch: https://openapi.troops.online/
-
-feature branches: If you are working with feature-12345, then the swagger spec will be available at https://openapi-12345.troops.online/ 
+It possibble to deploy Swagger UI and Prism Mock server with k8s
+Additional setup will require for CircleCI config
 
 ### Mock backend with Prism ####
 
@@ -81,7 +80,7 @@ Test mock server is up:
 
 - login:
 
-` curl "http://localhost:4010/api/login_check" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"_username\":\"c.carlos.troops.online\",\"_password\":\"c.carlos.troops.online\"}" -vvv` 
+` curl "http://localhost:4010/api/login_check" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"_username\":\"user@test.com\",\"_password\":\"password\"}" -vvv` 
 
 should return a token:
 
