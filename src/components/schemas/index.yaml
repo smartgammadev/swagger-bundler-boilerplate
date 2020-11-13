@@ -1,17 +1,17 @@
 Tokens:
-  $ref: tokens.yaml
+  $ref: common/tokens.yaml
 FirstName:
-  $ref: scalars/first_name.yaml
+  $ref: common/first_name.yaml
 LastName:
-  $ref: scalars/last_name.yaml
+  $ref: common/last_name.yaml
 Email:
-  $ref: scalars/email.yaml
+  $ref: common/email.yaml
 Phone:
-  $ref: scalars/phone.yaml
+  $ref: common/phone.yaml
 Gender:
-  $ref: scalars/gender.yaml
+  $ref: common/gender.yaml
 Address:
-  $ref: address.yaml
+  $ref: common/address.yaml
 Timestamp:
   $ref: scalars/timestamp.yaml
 UUID:
@@ -19,23 +19,21 @@ UUID:
 Date:
   $ref: scalars/date.yaml
 File:
-  $ref: scalars/file.yaml
+  $ref: common/file.yaml
 DateTime:
   $ref: scalars/date_time.yaml
 PaginationV2:
-  $ref: scalars/pagination_v2.yaml
+  $ref: common/pagination_v2.yaml
 FileV2:
-  $ref: scalars/file_v2.yaml
+  $ref: common/file_v2.yaml
 FileBase64:
-  $ref: scalars/file_base64.yaml
+  $ref: common/file_base64.yaml
 Time:
   $ref: scalars/time.yaml
 City:
-  $ref: city.yaml
+  $ref: common/city.yaml
 Country:
-  $ref: country.yaml
-SimpleId:
-  $ref: simple_id.yaml
+  $ref: common/country.yaml
 inline_response_401:
   type: object
   properties:
@@ -46,10 +44,10 @@ inline_response_401:
 NullValue:
   $ref: scalars/null.yaml
 Currency:
-  $ref: currency.yaml
+  $ref: common/currency.yaml
 Asset:
   $ref: acl/asset.yaml
 IdTitleObject:
-  $ref: scalars/id_title_object.yaml
+  $ref: common/id_title_object.yaml
 AddressResponse:
-  $ref: address_response.yaml
+  $ref: common/address_response.yaml

@@ -1,5 +1,3 @@
-ObjectCreatedWithId:
-  $ref: object_created_with_id.yaml
 NoContent:
   $ref: 204.yaml
 BadRequest:

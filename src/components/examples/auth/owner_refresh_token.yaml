@@ -1,3 +1,0 @@
-value:
-  refreshToken:
-    $ref: tokens.yaml#/owner/refresh_token
