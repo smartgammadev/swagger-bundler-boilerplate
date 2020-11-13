@@ -1,0 +1,11 @@
+type: object
+required:
+  - _username
+  - _password
+properties:
+  _username:
+    type: string
+  _password:
+    type: string
+  _locale:
+    type: string

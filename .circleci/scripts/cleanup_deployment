@@ -1,0 +1,219 @@
+#!/usr/bin/env bash
+
+# Script variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+TARGET_NAMESPACE="troops-features"
+
+TARGET_DOCKER_REPOSITORY="troops-swagger"
+TARGET_DOCKER_REPOSITORY_2="troops-swagger-prism"
+
+PREFIX_LIST="troops-swagger"
+
+# Help
+if [[ $# -ne 0 || $1 == '--help' ]]; then
+    echo "Cleanup_deployment"
+    echo "Usage:    ./cleanup_deployment"
+    echo "cleanup_deployment options:"
+    echo "          --help"
+    exit 0
+fi
+
+# Check env
+## Check ENV
+if [[ -z ${BITBUCKET_APP_PASSWORD} ]]; then
+    echo "Please setup env varibable BITBUCKET_APP_PASSWORD"
+    exit 1
+fi
+if [[ -z ${BITBUCKET_APP_USERNAME} ]]; then
+    echo "Please setup env varibable BITBUCKET_APP_USERNAME"
+    exit 1
+fi
+if [[ -z ${CIRCLE_PROJECT_REPONAME} ]]; then
+    echo "Please setup env varibable CIRCLE_PROJECT_REPONAME"
+    exit 1
+fi
+if [[ -z ${AWS_DEFAULT_REGISTRY} ]]; then
+    echo "Please setup env varibable AWS_DEFAULT_REGISTRY"
+    exit 1
+fi
+if [[ -z ${AWS_RDS_DEFAULT_INSTANCE} ]]; then
+    echo "Please setup env varibable AWS_RDS_DEFAULT_INSTANCE"
+    exit 1
+fi
+if [[ -z ${AWS_RDS_DEFAULT_USERNAME} ]]; then
+    echo "Please setup env varibable AWS_RDS_DEFAULT_USERNAME"
+    exit 1
+fi
+if [[ -z ${AWS_RDS_DEFAULT_PASSWORD} ]]; then
+    echo "Please setup env varibable AWS_RDS_DEFAULT_PASSWORD"
+    exit 1
+fi
+
+# Functions
+function contains() {
+    LIST=$1
+    PATTERN=$2
+
+    echo "${LIST}" | grep ${PATTERN} >/dev/null 2>&1
+}
+
+function retrieve_open_branches() {
+    OPEN_GIT_BRANCH_FEATURE=$(echo "$(curl -s -u "${BITBUCKET_APP_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/TroopsHR/${CIRCLE_PROJECT_REPONAME}/refs/branches?pagelen=100" |
+        jq '.values[].name' |
+        perl -n -e'/^"(feature-[0-9]{1,})"/ && print "$1\n"')")
+    OPEN_GIT_BRANCH_NEW_FEATURE=$(echo "$(curl -s -u "${BITBUCKET_APP_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/TroopsHR/${CIRCLE_PROJECT_REPONAME}/refs/branches?pagelen=100" |
+        jq '.values[].name' |
+        perl -n -e'/^"([0-9]{1,}-.*)"/ && print "$1\n"')")
+    OPEN_GIT_BRANCH_RELEASE=$(echo "$(curl -s -u "${BITBUCKET_APP_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/TroopsHR/${CIRCLE_PROJECT_REPONAME}/refs/branches?pagelen=100" |
+        jq '.values[].name' |
+        perl -n -e'/^"(r[0-9]{8})"/ && print "$1\n"')")
+    echo "${OPEN_GIT_BRANCH_FEATURE}
+${OPEN_GIT_BRANCH_NEW_FEATURE}
+${OPEN_GIT_BRANCH_RELEASE}"
+}
+
+function retrieve_live_deployment() {
+    IFS=$'\n'
+    for PREFIX_NAME in ${PREFIX_LIST}; do
+        K8S_DEPLOYMENT="${K8S_DEPLOYMENT}
+$(kubectl get deployments -o custom-columns=NAME:.metadata.name -n ${TARGET_NAMESPACE} | grep -E "${PREFIX_NAME}-([0-9]{1,}|r[0-9]{8})")"
+    done
+    echo "${K8S_DEPLOYMENT}" | sed '/^$/d'
+}
+
+function retrieve_live_services() {
+    IFS=$'\n'
+    for PREFIX_NAME in ${PREFIX_LIST}; do
+        K8S_SERVICES="${K8S_SERVICES}
+$(kubectl get services -o custom-columns=NAME:.metadata.name -n ${TARGET_NAMESPACE} | grep -E "${PREFIX_NAME}-([0-9]{1,}|r[0-9]{8})-svc")"
+    done
+    echo "${K8S_SERVICES}" | sed '/^$/d'
+}
+
+function retrieve_live_ingress() {
+    IFS=$'\n'
+    for PREFIX_NAME in ${PREFIX_LIST}; do
+        K8S_INGRESS="${K8S_INGRESS}
+$(kubectl get ingress -o custom-columns=NAME:.metadata.name -n ${TARGET_NAMESPACE} | grep -E "${PREFIX_NAME}-([0-9]{1,}|r[0-9]{8}).*-ingress")"
+    done
+    echo "${K8S_INGRESS}" | sed '/^$/d'
+}
+
+function retrieve_deployed_branches_id() {
+    LIVE_SERVICES="$(retrieve_live_services)"
+    LIVE_DEPLOYMENT="$(retrieve_live_deployment)"
+    LIVE_INGRESS="$(retrieve_live_ingress)"
+    LIVE_ECR_REGISTRY=$(aws ecr describe-repositories | jq '.repositories[].repositoryName' | grep -v sprint | grep -E "${TARGET_DOCKER_REPOSITORY}/" | perl -n -e'/(|feature-)([0-9]{1,}|r[0-9]{8}).*$/ && print "$2\n"' | sort | uniq)
+    LIVE_ECR_REGISTRY_2=$(aws ecr describe-repositories | jq '.repositories[].repositoryName' | grep -v sprint | grep -E "${TARGET_DOCKER_REPOSITORY_2}/" | perl -n -e'/(|feature-)([0-9]{1,}|r[0-9]{8}).*$/ && print "$2\n"' | sort | uniq)
+    echo "${LIVE_SERVICES}
+${LIVE_DEPLOYMENT}
+${LIVE_INGRESS}
+${LIVE_ECR_REGISTRY}
+${LIVE_ECR_REGISTRY_2}" | perl -n -e'/([0-9]{1,}|r[0-9]{8})/ && print "$1\n"' | sort | uniq
+}
+
+function check_and_delete_resource() {
+    RESOURCE_TYPE=$1
+    RESOURCE_NAME=$2
+
+    # Check if ressource is present and delete it if it is
+    kubectl get ${RESOURCE_TYPE} ${RESOURCE_NAME} --namespace=${TARGET_NAMESPACE} >/dev/null 2>&1
+    if [[ $? -eq 0 ]]; then
+        echo "[${RESOURCE_TYPE}] Deleting ${RESOURCE_NAME}"
+        kubectl delete ${RESOURCE_TYPE} ${RESOURCE_NAME} --namespace=${TARGET_NAMESPACE}
+        if [[ $? -eq 0 ]]; then
+            echo -e "\e[32m        Delete success\e[0m"
+        else
+            echo -e "\e[32m        Delete failed\e[0m"
+        fi
+    else
+        echo -e "[${RESOURCE_TYPE}] \e[33m Nothing to do \e[0m"
+    fi
+}
+
+function delete_docker_images_by_name() {
+    RESOURCE_NAME=$1
+
+    aws ecr describe-repositories | jq ".repositories[].repositoryName" | grep ${RESOURCE_NAME}
+    if [[ $? -eq 0 ]]; then
+        echo "[Docker Registry Images] Deleting ${RESOURCE_NAME}"
+        echo "{" >/tmp/image_list.json
+        aws ecr describe-repositories --repository-name=${RESOURCE_NAME} | jq '.repositories[]' | grep -E 'registryId|repositoryName' >>/tmp/image_list.json
+        echo "    \"imageIds\":" >>/tmp/image_list.json
+        aws ecr list-images --repository-name=${RESOURCE_NAME} | jq '.imageIds' >>/tmp/image_list.json
+        echo "}" >>/tmp/image_list.json
+
+        aws ecr batch-delete-image --cli-input-json "$(cat /tmp/image_list.json)" >/dev/null
+        if [[ $? -eq 0 ]]; then
+            echo -e "\e[32m        Delete success\e[0m"
+        else
+            echo -e "\e[32m        Delete failed\e[0m"
+        fi
+
+        echo "[Docker Registry] Deleting ${RESOURCE_NAME}"
+        aws ecr delete-repository --repository-name ${RESOURCE_NAME}
+        if [[ $? -eq 0 ]]; then
+            echo -e "\e[32m        Delete success\e[0m"
+        else
+            echo -e "\e[32m        Delete failed\e[0m"
+        fi
+    else
+        echo -e "[Docker Registry] \e[33m Nothing to do \e[0m"
+    fi
+}
+
+function delete_database_by_name() {
+    database_name=$1
+    mysql -h ${AWS_RDS_DEFAULT_INSTANCE} -u ${AWS_RDS_DEFAULT_USERNAME} -p${AWS_RDS_DEFAULT_PASSWORD} -e "show databases" | grep ${database_name}
+    if [[ $? -eq 0 ]]; then
+        echo "[RDS Databases] Deleting ${database_name}"
+        mysql -h ${AWS_RDS_DEFAULT_INSTANCE} -u ${AWS_RDS_DEFAULT_USERNAME} -p${AWS_RDS_DEFAULT_PASSWORD} -e "drop database ${database_name}"
+        if [[ $? -eq 0 ]]; then
+            echo -e "\e[32m        Delete success\e[0m"
+        else
+            echo -e "\e[32m        Delete failed\e[0m"
+        fi
+    else
+        echo -e "[RDS Databases] \e[33m Nothing to do \e[0m"
+    fi
+}
+
+# Cleanup
+OPEN_BRANCHES=$(retrieve_open_branches)
+DEPLOYED_BRANCH=$(retrieve_deployed_branches_id)
+
+for BRANCH_ID in ${DEPLOYED_BRANCH}; do
+    echo -e "Processing branch with id: \e[96m${BRANCH_ID}\e[0m ..."
+
+    # If branch is in open_branches do nothing, instead delete deployment
+    contains "${OPEN_BRANCHES}" ${BRANCH_ID}
+    if [[ $? -eq 0 ]]; then
+        echo -e "[${BRANCH}] \e[33m Nothing to do, branch still alive \e[0m"
+    else
+        echo -e "[${BRANCH}] \e[33m Deleting ...  \e[0m"
+
+        echo "1) Checking if ingresses are still up ..."
+        for PREFIX_NAME in ${PREFIX_LIST}; do
+            check_and_delete_resource ingress "${PREFIX_NAME}-${BRANCH_ID}-ingress"
+        done
+
+        echo "2) Checking if service is still up ..."
+        for PREFIX_NAME in ${PREFIX_LIST}; do
+            check_and_delete_resource service "${PREFIX_NAME}-${BRANCH_ID}-svc"
+        done
+
+        echo "3) Checking if deployment is still up ..."
+        for PREFIX_NAME in ${PREFIX_LIST}; do
+            check_and_delete_resource deployment "${PREFIX_NAME}-${BRANCH_ID}"
+        done
+
+        echo "4) Deleting docker images ..."
+        delete_docker_images_by_name "${TARGET_DOCKER_REPOSITORY}/${BRANCH_ID}"
+        delete_docker_images_by_name "${TARGET_DOCKER_REPOSITORY_2}/${BRANCH_ID}"
+    fi
+
+    echo "Done ..."
+    echo "---"
+    echo "---"
+done

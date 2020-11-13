@@ -1,4 +1,4 @@
-tags: [ list_example ]
+tags: [ list ]
 description: Get TEAs that have an Interim Partnership with given UC
 operationId: Uc_Teas_viewPartnerTeas
 parameters:

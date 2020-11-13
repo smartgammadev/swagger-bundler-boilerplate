@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+## Script variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+## Args
+PROJECT_NAME=$1
+PROJECT_ENV=$2
+
+## Help
+if [[ $# -ne 2 || $1 == '--help' || -z "${PROJECT_ENV}" ]]; then
+    echo "Docker tag and push"
+    echo "Usage:    ./docker_tag_push PROJECT_NAME PROJECT_ENV"
+    echo "Docker_tag_push options:"
+    echo "          --help"
+    echo "More informations:"
+    echo "PROJECT_NAME argument will be the docker name on the registry for example AWS_DEFAULT_REGISTRY/PROJECT_NAME/staging:latest"
+    echo "PROJECT_ENV argument will be the docker label on the registry for example AWS_DEFAULT_REGISTRY/my_website/PROJECT_ENV:latest"
+    exit 0
+fi
+
+## Checks
+if [[ -z ${AWS_DEFAULT_REGISTRY} ]]; then
+    echo "Please setup env varibable AWS_DEFAULT_REGISTRY"
+    exit 1
+fi
+
+## Create registry repository if needed
+aws ecr create-repository --repository-name ${PROJECT_NAME}/${PROJECT_ENV} || echo "Repository already exist."
+
+## Tag backend
+docker tag ${PROJECT_NAME}/${PROJECT_ENV} ${AWS_DEFAULT_REGISTRY}/${PROJECT_NAME}/${PROJECT_ENV}:latest
+docker tag ${PROJECT_NAME}/${PROJECT_ENV} ${AWS_DEFAULT_REGISTRY}/${PROJECT_NAME}/${PROJECT_ENV}:build-${CIRCLE_BUILD_NUM}
+
+## Push Backend
+docker push ${AWS_DEFAULT_REGISTRY}/${PROJECT_NAME}/${PROJECT_ENV}:latest
+docker push ${AWS_DEFAULT_REGISTRY}/${PROJECT_NAME}/${PROJECT_ENV}:build-${CIRCLE_BUILD_NUM}
+
+## Tag and push if CIRCLE_TAG is set
+if [[ ! -z ${CIRCLE_TAG} ]]; then
+    docker tag ${PROJECT_NAME}/${PROJECT_ENV} ${AWS_DEFAULT_REGISTRY}/${PROJECT_NAME}/${PROJECT_ENV}:${CIRCLE_TAG}
+    docker push ${AWS_DEFAULT_REGISTRY}/${PROJECT_NAME}/${PROJECT_ENV}:${CIRCLE_TAG}
+fi

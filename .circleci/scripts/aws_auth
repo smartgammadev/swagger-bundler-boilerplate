@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+## Script variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+## Args
+TARGET_COMPUTE_ZONE="$1"
+TARGET_CLUSTER_NAME="$2"
+
+## Help
+if [[ $# -ne 2 || $1 == '--help' || -z "${TARGET_COMPUTE_ZONE}" ]]; then
+    echo "aws auth"
+    echo "Usage:    ./aws_auth COMPUTE_ZONE CLUSTER_NAME"
+    echo "aws auth options:"
+    echo "          --help"
+    exit 0
+fi
+
+# Check env
+if [[ -z ${AWS_ACCESS_KEY_ID} ]]; then
+    echo "Please setup env varibable AWS_ACCESS_KEY_ID"
+    exit 1
+fi
+if [[ -z ${AWS_SECRET_ACCESS_KEY} ]]; then
+    echo "Please setup env varibable AWS_SECRET_ACCESS_KEY"
+    exit 1
+fi
+
+# Aws Auth
+aws sts get-caller-identity
+
+# EKS
+aws eks --region ${TARGET_COMPUTE_ZONE} update-kubeconfig --name ${TARGET_CLUSTER_NAME}
+
+# ECR
+$(aws ecr get-login --no-include-email --region ${TARGET_COMPUTE_ZONE})

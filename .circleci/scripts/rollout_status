@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+## Script variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+DEPLOYMENT_NAME="$1"
+TARGET_NAMESPACE="$2"
+
+## Help
+if [[ $# -ne 2 || $1 == '--help' ]]; then
+  echo "Rollout_status"
+  echo "Usage:    ./rollout_status DEPLOYMENT_NAME TARGET_NAMESPACE"
+  echo "Description:"
+  echo "This script check if k8s deployment rollout succeed"
+  echo "rollout_status options:"
+  echo "          --help"
+  exit 0
+fi
+
+echo "Check deployment ${DEPLOYMENT_NAME} in ${TARGET_NAMESPACE} ..."
+timeout 1200 kubectl rollout status deploy/${DEPLOYMENT_NAME} --namespace=${TARGET_NAMESPACE}
+
+if [[ $? -ne 0 ]]; then
+  exit 1
+fi

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+## Script variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+## Args
+PROJECT_NAME=$1
+PROJECT_ENV=$2
+
+## Help
+if [[ $# -ne 2 || $1 == '--help' ]]; then
+    echo "Get_latest_docker_image_build"
+    echo "Usage:    ./get_latest_docker_image_build PROJECT_NAME PROJECT_ENV"
+    echo "Description:"
+    echo "This script retrieve last build number of docker image"
+    echo "get_latest_docker_image_build options:"
+    echo "          --help"
+    exit 0
+fi
+
+## Check env
+if [[ -z ${AWS_DEFAULT_REGISTRY} ]]; then
+    echo "Please setup env varibable AWS_DEFAULT_REGISTRY"
+    exit 1
+fi
+
+## Check
+if [[ -z ${PROJECT_NAME} || -z ${PROJECT_ENV} || $# -ne 2 ]]; then
+    echo "Please specify repo name and image name like: ./retreive_latest_docker_image_build.sh PROJECT_NAME PROJECT_ENV"
+    exit 1
+fi
+
+## Retreive latest build
+aws ecr describe-images --repository-name=${PROJECT_NAME}/${PROJECT_ENV} --image-ids='{ "imageTag": "latest" }' | perl -n -e'/"(build-[0-9]{1,})"/ && print $1'

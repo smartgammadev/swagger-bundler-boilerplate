@@ -4,7 +4,7 @@
     "validate": "swagger-cli validate ./build/openapi.yaml",
     "dredd": "dredd --config ./dredd.yml.dist",
     "bundle": "swagger-cli bundle -r -o ./build/openapi.yaml -t yaml ./src/index.yaml",
-    "concat": "concat-cli -f src/paths/v2/**/**/**/**/index.yaml src/paths/v2/**/**/**/index.yaml src/paths/v2/**/**/index.yaml -o src/paths/index_bundled.yaml"
+    "concat": "concat-cli -f src/paths/auth/index.yaml src/paths/v2/**/**/**/index.yaml src/paths/v2/**/**/index.yaml -o src/paths/index_bundled.yaml"
   },
   "dependencies": {
     "concat-cli": "^4.0.0",

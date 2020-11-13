@@ -1,4 +1,4 @@
-tags: [ Auth, Registration ]
+tags: [ auth ]
 description: 'Refresh user''s JWT token'
 requestBody:
   description: 'Refresh Token'
@@ -6,11 +6,6 @@ requestBody:
     application/json:
       schema:
         $ref: '#/components/schemas/RefreshToken'
-      examples:
-        owner:
-          $ref: '#/components/examples/OwnerRefreshToken'
-        candidate:
-          $ref: '#/components/examples/CandidateRefreshToken'
 responses:
   200:
     description: 'Tokens were successfully regenerated'
@@ -18,10 +13,5 @@ responses:
       application/json:
         schema:
           $ref: '#/components/schemas/Tokens'
-        examples:
-          owner:
-            $ref: '#/components/examples/OwnerBearerAndRefreshTokens'
-          candidate:
-            $ref: '#/components/examples/CandidateBearerAndRefreshTokens'
   401:
     description: 'Returned in case when JWT Refresh Token was expired'

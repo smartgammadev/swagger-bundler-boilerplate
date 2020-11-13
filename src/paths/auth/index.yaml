@@ -1,0 +1,9 @@
+#---------------- API Auth ----------------#
+/api/login_check:
+  post:
+    $ref: auth/post_login_check.yaml
+
+/api/token/refresh:
+  post:
+    $ref: auth/post_token_refresh.yaml
+#---------------- END API Auth ----------------#

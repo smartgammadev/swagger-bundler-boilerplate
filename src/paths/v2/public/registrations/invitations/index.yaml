@@ -1,3 +1,0 @@
-/api/v2/public/registrations/invitations:
-  put:
-    $ref: v2/public/registrations/invitations/put.yaml

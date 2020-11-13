@@ -1,6 +1,7 @@
 tags:
   - dynamic_keys_array
 description: Get Granted Actions List
+operationId: Uc_ACL_getGrantedActions
 parameters:
   - $ref: ./parameters/asset.yaml
   - $ref: '#/components/parameters/ids'

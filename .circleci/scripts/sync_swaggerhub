@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+## Script variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+## Args
+TARGET_OPENAPI_FILE="$1"
+TARGET_OPENAPI_NAME="$2"
+
+## Help
+if [[ $# -ne 2 || $1 == "--help" || -z "${TARGET_OPENAPI_FILE}" ]]; then
+    echo "sync_swaggerhub"
+    echo "Usage:    ./sync_swaggerhub TARGET_OPENAPI_FILE TARGET_OPENAPI_NAME"
+    echo "sync_swaggerhub options:"
+    echo "          --help"
+    exit 0
+fi
+
+# Check env
+if [[ -z ${SWAGGER_HUB_APIKEY} ]]; then
+    echo "Please setup env varibable SWAGGER_HUB_APIKEY"
+    exit 1
+fi
+
+# Sync with swaggerhub
+
+curl \
+    --header "Authorization: ${SWAGGER_HUB_APIKEY}" \
+    --header "Content-Type: application/yaml" \
+    --data-binary "@/${TARGET_OPENAPI_FILE}" \
+    -X POST https://api.swaggerhub.com/apis/TroopsHR/${TARGET_OPENAPI_NAME}

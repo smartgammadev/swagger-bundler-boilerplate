@@ -34,13 +34,6 @@ City:
   $ref: common/city.yaml
 Country:
   $ref: common/country.yaml
-inline_response_401:
-  type: object
-  properties:
-    title:
-      type: string
-    convetion_form:
-      type: string
 NullValue:
   $ref: scalars/null.yaml
 Currency:
@@ -51,3 +44,8 @@ IdTitleObject:
   $ref: common/id_title_object.yaml
 AddressResponse:
   $ref: common/address_response.yaml
+LoginForm:
+  $ref: auth/login_form.yaml
+RefreshToken:
+  $ref: auth/refresh_token.yaml
+

@@ -1,0 +1,5 @@
+type: object
+properties:
+  refreshToken:
+    type: string
+    example: 71419d52f7c823d5727d05609d57058b55adbc6f3f26bcf6154abfbd4b795cdabab5940ddd455122118ef4d47d8159a5ee8f06d38d91370af70b05dc2f3650a0

@@ -24,8 +24,8 @@ ENV URL="https://openapi.troops.online/openapi.yaml"
 RUN mkdir -p /usr/share/nginx/html/openapi
 
 ## Nginx for deployments
-#COPY .circleci/docker/nginx/.htpasswd /etc/nginx/.htpasswd
-#COPY .circleci/docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY .circleci/docker/nginx/.htpasswd /etc/nginx/.htpasswd
+COPY .circleci/docker/nginx/nginx.conf /etc/nginx/nginx.conf
 
 ## Copy output from stage 0
 COPY --from=0 /app/build/openapi.yaml /usr/share/nginx/html/openapi/openapi.yaml

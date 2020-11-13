@@ -1,4 +1,4 @@
-tags: [ Auth ]
+tags: [ auth ]
 description: Check user's credentials
 security: []
 requestBody:
@@ -7,16 +7,6 @@ requestBody:
     application/json:
       schema:
         $ref: '#/components/schemas/LoginForm'
-      examples:
-        owner:
-          $ref: '#/components/examples/OwnerCredentials'
-        candidate:
-          $ref: '#/components/examples/CandidateCredentials'
-        tea:
-          description: TEA's credentials
-          value:
-            _username: user@test.com
-            _password: mypassword
 responses:
   200:
     description: 'Tokens were successfully generated'
@@ -24,11 +14,6 @@ responses:
       application/json:
         schema:
           $ref: '#/components/schemas/Tokens'
-        examples:
-          owner:
-            $ref: '#/components/examples/OwnerBearerAndRefreshTokens'
-          candidate:
-            $ref: '#/components/examples/CandidateBearerAndRefreshTokens'
   400:
     $ref: '#/components/responses/BadRequest'
   401:

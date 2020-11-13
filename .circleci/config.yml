@@ -1,0 +1,284 @@
+version: 2.1
+
+## Aliases (Some yaml aliases to improve filters reusability)
+aliases:
+  - &all_branches_filter
+    branches:
+      only:
+        - /.*/
+    tags:
+      ignore: /.*/
+  - &features_filter
+    branches:
+      only:
+        - /^feature-([0-9]{1,})$/
+    tags:
+      ignore: /.*/
+  - &master_only_filter
+    branches:
+      only: master
+    tags:
+      ignore: /.*/
+  - &sprint_only
+    branches:
+      only:
+        - /^release-sprint([0-9]{1,})$/
+  - &sprint_and_master
+    branches:
+      only:
+        - /^release-sprint([0-9]{1,})$/
+        - master
+    tags:
+      ignore: /.*/
+  - &staging_tag_filter
+    tags:
+      only: /^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-.+)?/
+    branches:
+      ignore: /.*/
+  - &production_tag_filter
+    tags:
+      only: /^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/
+    branches:
+      ignore: /.*/
+
+## Executors (Provide definitions of docker/ios workers)
+executors:
+  nodejs:
+    docker:
+      - image: circleci/node:carbon
+    working_directory: ~/repo
+
+  # Custom docker image to provide aws, k8s, git, python and envsubst utilities
+  aws:
+    docker:
+      - image: aegirops/aws-cli:1.4.0
+    working_directory: ~/repo
+
+## Commands (A bunch of steps groupe by name)
+commands:
+  notify-slack:
+    parameters:
+      message:
+        description: Message to send
+        type: string
+        default: "no message configured"
+    steps:
+      - deploy:
+          name: Notify slack
+          command: .circleci/scripts/notify_slack ${SLACK_DEPLOY_BOT_WEBHOOK} "<< parameters.message >>"
+
+  ### AWS / Auth
+  aws-auth:
+    parameters:
+      target-cluster:
+        description: Overriding AWS_DEFAULT_EKS_CLUSTER by AWS_PRODUCTION_EKS_CLUSTER for production build
+        type: string
+        default: ${AWS_DEFAULT_EKS_CLUSTER}
+      target-compute-zone:
+        description: Overriding AWS_DEFAULT_REGION by AWS_PRODUCTION_REGION for production build
+        type: string
+        default: ${AWS_DEFAULT_REGION}
+    steps:
+      - run:
+          name: Authenticate against AWS
+          command: .circleci/scripts/aws_auth << parameters.target-compute-zone >> << parameters.target-cluster >>
+
+  ### docker / registry
+  docker-tag-push:
+    parameters:
+      target-build:
+        description: Overriding CIRCLE_BRANCH for staging or production build
+        type: string
+        default: ${CIRCLE_BRANCH}
+      target-cluster:
+        description: Overriding CLUSTER_NAME for production build
+        type: string
+        default: ${AWS_DEFAULT_EKS_CLUSTER}
+      target-compute-zone:
+        description: Overriding AWS_DEFAULT_REGION by AWS_PRODUCTION_REGION for production build
+        type: string
+        default: ${AWS_DEFAULT_REGION}
+    steps:
+      - aws-auth:
+          target-cluster: << parameters.target-cluster >>
+          target-compute-zone: << parameters.target-compute-zone >>
+      - deploy:
+          name: Tag created image with the build number
+          command: |
+            echo "troops-swagger"
+            echo << parameters.target-build >>
+            .circleci/scripts/docker_tag_push troops-swagger << parameters.target-build >>
+            .circleci/scripts/docker_tag_push troops-swagger-prism << parameters.target-build >>
+
+  ### K8S
+  check-deployment:
+    parameters:
+      target-deployment:
+        description: troops-swagger
+        type: string
+        default: troops-swagger
+      target-namespace:
+        description: Overriding troops-features with another namespace
+        type: string
+        default: troops-features
+    steps:
+      - deploy:
+          name: Check deployment status
+          command: .circleci/scripts/rollout_status << parameters.target-deployment >> << parameters.target-namespace >>
+
+## Jobs (CI Steps, contains executor, commands and standalone run and deploy statement)
+jobs:
+  # Feature Specific Jobs
+  dockerize:
+    executor: aws
+    steps:
+      - checkout
+      - setup_remote_docker
+      - aws-auth
+      - run:
+          name: Docker build backend
+          command: |
+            export BRANCH_ID=`.circleci/scripts/get_branch_id`
+            docker build -f docker/swagger/Dockerfile --target swagger-ui -t "troops-swagger/${BRANCH_ID}" .
+            docker build -f docker/swagger/Dockerfile --target prism -t "troops-swagger-prism/${BRANCH_ID}" .
+      - docker-tag-push:
+          target-build: $(.circleci/scripts/get_branch_id)
+
+  deploy-feature:
+    executor: aws
+    steps:
+      - checkout
+      - aws-auth:
+          target-cluster: ${AWS_DEFAULT_EKS_CLUSTER}
+          target-compute-zone: ${AWS_DEFAULT_REGION}
+      - run:
+          name: Build k8s configuration
+          command: |
+            export BRANCH_ID=`.circleci/scripts/get_branch_id`
+            export BUILD_ID=`.circleci/scripts/get_latest_docker_image_build troops-swagger ${BRANCH_ID}`
+            cat .circleci/k8s/feature.yml.dist | envsubst > .circleci/k8s/feature.yml
+      - run:
+          name: Check configuration
+          command: cat .circleci/k8s/feature.yml
+      - deploy:
+          name: Apply namespace
+          command: |
+            cat .circleci/k8s/namespace.yml.dist > .circleci/k8s/namespace.yml
+            kubectl apply -f .circleci/k8s/namespace.yml
+      - deploy:
+          name: Apply configuration
+          command: kubectl apply -f .circleci/k8s/feature.yml
+      - check-deployment:
+          target-deployment: troops-swagger-$(.circleci/scripts/get_branch_id)
+          target-namespace: troops-features
+      - deploy:
+          name: Your deployment is available here
+          command: echo https://openapi-$(.circleci/scripts/get_branch_id).troops.online
+      - notify-slack:
+          message: "[Troops OpenApi] New deployment available here: https://openapi-$(.circleci/scripts/get_branch_id).troops.online. New mock available here: https://mock-$(.circleci/scripts/get_branch_id).troops.online."
+      - run:
+          name: Create artifact folder
+          command: |
+            mkdir -p /tmp/k8s
+            mv .circleci/k8s/*.yml /tmp/k8s/.
+      - store_artifacts:
+          path: /tmp/k8s
+
+  deploy:
+    executor: aws
+    steps:
+      - checkout
+      - aws-auth:
+          target-cluster: ${AWS_DEFAULT_EKS_CLUSTER}
+          target-compute-zone: ${AWS_DEFAULT_REGION}
+      - run:
+          name: Build k8s configuration
+          command: |
+            export BRANCH_ID=`.circleci/scripts/get_branch_id`
+            export BUILD_ID=`.circleci/scripts/get_latest_docker_image_build troops-swagger ${BRANCH_ID}`
+            cat .circleci/k8s/dev.yml.dist | envsubst > .circleci/k8s/dev.yml
+      - run:
+          name: Check configuration
+          command: cat .circleci/k8s/dev.yml
+      - deploy:
+          name: Apply namespace
+          command: |
+            cat .circleci/k8s/namespace.yml.dist > .circleci/k8s/namespace.yml
+            kubectl apply -f .circleci/k8s/namespace.yml
+      - deploy:
+          name: Apply configuration
+          command: kubectl apply -f .circleci/k8s/dev.yml
+      - check-deployment:
+          target-deployment: troops-swagger
+          target-namespace: troops-features
+      - deploy:
+          name: Your deployment is available here
+          command: echo https://openapi.troops.online
+      - notify-slack:
+          message: "[Troops OpenApi] New deployment available here: https://openapi.troops.online. New mock available here: https://mock.troops.online"
+      - run:
+          name: Create artifact folder
+          command: |
+            mkdir -p /tmp/k8s
+            mv .circleci/k8s/*.yml /tmp/k8s/.
+      - store_artifacts:
+          path: /tmp/k8s
+
+  sync_with_swaggerhub:
+    executor: nodejs
+    steps:
+      - checkout
+      - run:
+          name: Install and build openapi.yml
+          command: npm install && npm run compile
+      - run:
+          name: Sync openapi.yml with swaggerhub
+          command: .circleci/scripts/sync_swaggerhub ~/repo/build/openapi.yaml TroopsBackend
+      - notify-slack:
+          message: "[Troops OpenApi] Synced succes with SwaggerHub https://app.swaggerhub.com/apis/TroopsHR/TroopsBackend"
+  #! Utility Jobs
+  cleanup_deployment:
+    executor: aws
+    steps:
+      - checkout
+      - aws-auth:
+          target-cluster: ${AWS_DEFAULT_EKS_CLUSTER}
+          target-compute-zone: ${AWS_DEFAULT_REGION}
+      - run:
+          name: Cleanup deployments, registry and database
+          command: .circleci/scripts/cleanup_deployment
+
+## Workflows (Orchestrate Jobs according to commmit/tag/branches triggers)
+workflows:
+  features:
+    jobs:
+      ## Features workflow
+      - dockerize:
+          context: troopsDev
+          filters: *features_filter
+      - deploy-feature:
+          context: troopsDev
+          filters: *features_filter
+          requires:
+            - dockerize
+  dev:
+    jobs:
+      ## dev workflow
+      - dockerize:
+          context: troopsDev
+          filters: *master_only_filter
+      - deploy:
+          context: troopsDev
+          filters: *master_only_filter
+          requires:
+            - dockerize
+      - sync_with_swaggerhub:
+          context: troopsDev
+          filters: *master_only_filter
+          requires:
+            - deploy
+  cleanup:
+    jobs:
+      - cleanup_deployment:
+          context: troopsDev
+          filters: *master_only_filter

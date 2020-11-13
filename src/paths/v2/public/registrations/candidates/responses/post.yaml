@@ -1,6 +1,0 @@
-allOf:
-  - $ref: '#/components/schemas/Tokens'
-  - type: object
-    properties:
-      uuid:
-        $ref: '#/components/schemas/UUID'

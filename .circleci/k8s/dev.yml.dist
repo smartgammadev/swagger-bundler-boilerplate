@@ -1,0 +1,120 @@
+---
+### Backend Deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: troops-swagger
+  namespace: troops-features
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: troops-swagger
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: troops-swagger
+    spec:
+      containers:
+        - name: troops-swagger
+          image: "${AWS_DEFAULT_REGISTRY}/troops-swagger/dev:${BUILD_ID}"
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: APP_HOST
+              value: "openapi.troops.online"
+            - name: URL
+              value: "openapi/openapi.yaml"
+        - name: troops-swagger-prism
+          image: "${AWS_DEFAULT_REGISTRY}/troops-swagger-prism/dev:${BUILD_ID}"
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            tcpSocket:
+              port: 4010
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 4010
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          ports:
+            - containerPort: 4010
+              protocol: TCP
+          env:
+            - name: APP_HOST
+              value: "mock.troops.online"
+
+---
+### Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: troops-swagger-svc
+  namespace: troops-features
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: http-mock
+      port: 4010
+      targetPort: 4010
+  selector:
+    app: troops-swagger
+
+---
+### Ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: troops-swagger-ingress
+  namespace: troops-features
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 256m
+    cert-manager.io/cluster-issuer: letsencrypt-production-dns
+spec:
+  tls:
+    - hosts:
+        - "*.troops.online"
+      secretName: wildcard-v2-troopsonline
+  rules:
+    - host: openapi.troops.online
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: troops-swagger-svc
+              servicePort: 80
+    - host: mock.troops.online
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: troops-swagger-svc
+              servicePort: 4010

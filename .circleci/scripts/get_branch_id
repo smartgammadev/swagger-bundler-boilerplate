@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+## Script variables
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+## REGEX
+FEATURE_REGEX='^feature-([0-9]{1,})$'
+NEW_FEATURE_REGEX='^([0-9]{1,})-.*$'
+RELEASE_REGEX='^release-sprint([0-9]{1,})$'
+NEW_RELEASE_REGEX='^r([0-9]{8}).*$'
+
+## Help
+if [[ $# -ne 0 || $1 == '--help' ]]; then
+    echo "Get_branch_id"
+    echo "Usage:    ./get_branch_id"
+    echo "Description:"
+    echo "Return current CIRCLE_BRANCH id"
+    echo "get_branch_id options:"
+    echo "          --help"
+    exit 0
+fi
+
+## Branch Regexp
+if [[ ${CIRCLE_BRANCH} =~ $FEATURE_REGEX ]]; then
+    echo ${CIRCLE_BRANCH} | perl -n -e'/feature-([0-9]{1,})/ && print $1'
+    exit 0
+elif [[ ${CIRCLE_BRANCH} =~ $NEW_FEATURE_REGEX ]]; then
+    echo ${CIRCLE_BRANCH} | perl -n -e'/([0-9]{1,})-.*/ && print $1'
+    exit 0
+elif [[ ${CIRCLE_BRANCH} =~ $RELEASE_REGEX ]]; then
+    SPRINTID=$(echo ${CIRCLE_BRANCH} | perl -n -e'/release-sprint([0-9]{1,})/ && print $1')
+    echo "sprint${SPRINTID}"
+    exit 0
+elif [[ ${CIRCLE_BRANCH} =~ $NEW_RELEASE_REGEX ]]; then
+    RELEASEID=$(echo ${CIRCLE_BRANCH} | perl -n -e'/r([0-9]{8}).*/ && print $1')
+    echo "r${RELEASEID}"
+    exit 0
+elif [[ ${CIRCLE_BRANCH} == "master" ]]; then
+    echo "dev"
+    exit 0
+else
+    echo "Not a feature branch, please provide a branch name like feature-ID"
+    echo "Exemple: feature-0123"
+    exit 1
+fi
